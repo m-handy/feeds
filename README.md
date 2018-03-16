@@ -6,4 +6,4 @@ Simple feeds reader. Reads Json, RSS2 & NewsML.
 dotnet run
 ```
 
-Output is in json.xml, rss.xml & newsml.xml.
+Output is in `json.xml`, `rss.xml` & `newsml.xml` in `output` folder.
