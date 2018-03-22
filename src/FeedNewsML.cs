@@ -9,17 +9,26 @@ namespace feeds
     {
         public FeedNewsML(string url) : base(url) { }
 
-        public override Information ParseFeed()
+        public override Information[] ParseFeed()
         {
-            DownloadData();
-            var x = XElement.Parse(URLdata);
-            IEnumerable<XElement> childList =
-                from el in x.Descendants("name")
-                //where (string)el.Attribute("uri") == "Yes"
-                select el ;
+            IEnumerable<XElement> childList;
+            List<Information> listInf = new List<Information>();
+            using (var reader = Client.OpenRead(URL))
+            {
+                var x = XElement.Load(reader);
+                childList =
+                    from el in x.Descendants("ProductOffer")
+                        //where (string)el.Attribute("uri") == "Yes"
+                    select el;
+            }
+
             foreach (XElement e in childList)
+            {
                 Console.WriteLine(e);
-            return new Information();
+            }
+
+            
+            return listInf.ToArray();
         }
     }
 }

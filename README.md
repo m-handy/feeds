@@ -1,9 +1,9 @@
 # feeds
-Simple feeds reader. Reads Json, RSS2 & NewsML.
+Simple feeds reader. Reads Json and XML
 
 # usage
 ```bash
 dotnet run
 ```
 
-Output is in `json.xml`, `rss.xml` & `newsml.xml` in `output` folder.
+Outputs are in `output` folder.

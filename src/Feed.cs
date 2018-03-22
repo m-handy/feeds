@@ -1,27 +1,33 @@
 using System;
 using System.Net;
 
+
 namespace feeds
 {
     public abstract class Feed
     {
-        public string URLdata { get; private set; }
+        private static WebClient _client = null;
         protected string URL { get; }
-        public enum Type { RSS2, NewsML, JSON };
+        protected WebClient Client
+        {
+            get
+            {
+                if (_client == null)
+                {
+                    _client = new WebClient();
+                    _client.Credentials = new NetworkCredential("viglink", "viglink123");
+                }
+                return _client;
+            }
+        }
+        public enum Type { RSS2, NewsML, JSON, XML };
 
         public Feed(string url)
         {
             this.URL = url;
         }
 
-        protected void DownloadData()
-        {
-            Console.WriteLine("Downloading " + this.ToString());
-            URLdata = new WebClient().DownloadString(URL);
-        }
-
-        public abstract Information ParseFeed();
-
+        public abstract Information[] ParseFeed();
 
     }
 }

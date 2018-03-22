@@ -8,19 +8,20 @@ namespace feeds
     {
         static void Main(string[] args)
         {
-            var newsML = "http://fse.futurelicensing.com/feed/fetch/token/7cd98ffad2be20944ce8f13c1533697d";
-            var RSS2_Format = "http://fse.futurelicensing.com/feed/fetch/token/40526a492f631f0306bd5bbdff042cb2/";
-            var JSON_Format = "http://fse.futurelicensing.com/feed/fetch/token/cc4920d3fd32c3000501d66afdd9c2eb/";
+            Console.WriteLine("Parsing JSON...");
+            var JSON_Format = "https://api-stage.getprice.com.au/v1/products?category=95&country=1&r=10&o=j";
+            var json = GetFeed(Feed.Type.JSON, JSON_Format);
+            SaveFeed(json, Feed.Type.JSON.ToString());
 
-            //GetFeed(Feed.Type.JSON, JSON_Format);
-            //GetFeed(Feed.Type.RSS2, RSS2_Format);
-            //GetFeed(Feed.Type.NewsML, newsML);
-            //GetFeed(Feed.Type.NewsML, "https://www.iptc.org/std/NewsML-G2/2.15/examples/LISTING%202%20NewsML-G2%20Text%20Document.xml");
-            var rss = GetFeed(Feed.Type.RSS2, "https://gist.githubusercontent.com/ToddG/1974651/raw/f7978c779bcb00aaa5a6551936e2387590cb303f/sample-rss-2.0-feed.xml");
-            SaveFeed(rss, "rss");
+            Console.WriteLine("Parsing XML...");
+            var XML_Format = "https://api-stage.getprice.com.au/v1/products?category=95&country=1&r=10&o=x";
+            var xml = GetFeed(Feed.Type.XML, XML_Format);
+            SaveFeed(xml, Feed.Type.XML.ToString());
+
+            Console.WriteLine("Done.");
         }
 
-        static Information GetFeed(Feed.Type type, string URL)
+        static Information[] GetFeed(Feed.Type type, string URL)
         {
             Feed feed;
             switch (type)
@@ -34,18 +35,21 @@ namespace feeds
                 case Feed.Type.RSS2:
                     feed = new FeedRSS2(URL);
                     break;
+                case Feed.Type.XML:
+                    feed = new FeedXML(URL);
+                    break;
                 default: throw new Exception("Unsupported type!");
             }
             return feed.ParseFeed();
         }
 
-        static void SaveFeed(Information information, string filename)
+        static void SaveFeed(Information[] information, string filename)
         {
             var outputDir = "output";
-            var xmlSerializer = new XmlSerializer(typeof(Information));
             Directory.CreateDirectory(outputDir);
             var outputFileStream = new StreamWriter(outputDir + Path.DirectorySeparatorChar + filename + ".xml");
 
+            var xmlSerializer = new XmlSerializer(typeof(Information[]));
             xmlSerializer.Serialize(outputFileStream, information);
 
             outputFileStream.Close();

@@ -1,5 +1,6 @@
 using System.ServiceModel.Syndication;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace feeds
 {
@@ -7,20 +8,22 @@ namespace feeds
     {
         public FeedRSS2(string url) : base(url) { }
 
-        public override Information ParseFeed()
+        public override Information[] ParseFeed()
         {
-            //DownloadData();
             SyndicationFeed feed = SyndicationFeed.Load(XmlReader.Create(URL));
 
-            var information = new Information();
+            List<Information> listInf = new List<Information>();
+            
             foreach (var i in feed.Items)
             {
+                var information = new Information();
                 information.Title = i.Title.Text;
-                information.PublicationDate = i.PublishDate.DateTime;
-                information.Description = i.Summary.Text;
+                //information.PublicationDate = i.PublishDate.DateTime;
+                //information.Description = i.Summary.Text;
+                listInf.Add(information);
             }
 
-            return information;
+            return listInf.ToArray();
         }
     }
 }
